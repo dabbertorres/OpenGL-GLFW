@@ -1,0 +1,17 @@
+# hidden files
+.*
+
+# IDE files
+*.mk
+*.project
+
+# misc files
+*.txt
+
+# object files
+*.o
+*.o.d
+
+# libs
+*.so
+*.a
