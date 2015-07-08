@@ -6,7 +6,7 @@ namespace swift
 	:	Color(0, 0, 0, 0)
 	{}
 	
-	Color::Color(byte b, byte g, byte r, byte a = 255)
+	Color::Color(byte b, byte g, byte r, byte a)
 	:	blue(b),
 		green(g),
 		red(r),

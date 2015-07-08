@@ -8,7 +8,7 @@ namespace swift
 	:	Window(3, 2)
 	{}
 	
-	Window::Window(int contextMajor, int contextMinor)
+	Window::Window(uint contextMajor, uint contextMinor)
 	:	context{contextMajor, contextMinor},
 		window(nullptr),
 		isFullscreen(false)
@@ -33,13 +33,15 @@ namespace swift
 
 	Window::~Window()
 	{
+		glfwDestroyWindow(window);
+		
 		--numOfWindows;
 		
 		if(!numOfWindows)
 			glfwTerminate();
 	}
 	
-	bool Window::create(const Vector<int, 2>& res, const std::string& t, int mon, bool fs)
+	bool Window::create(const Vector<uint, 2>& res, const std::string& t, uint mon, bool fs)
 	{
 		title = t;
 		isFullscreen = fs;
@@ -47,11 +49,27 @@ namespace swift
 		
 		// should throw exception instead
 		if(!window)
-				throw std::runtime_error("Could not create the window.");
-		
-		glfwMakeContextCurrent(window);
+			throw std::runtime_error("Could not create the window.");
 		
 		return true;
+	}
+	
+	void Window::setVideoMode(const Monitor::VideoMode& vm)
+	{
+		glfwWindowHint(GLFW_BLUE_BITS, vm.blueBits);
+		glfwWindowHint(GLFW_GREEN_BITS, vm.greenBits);
+		glfwWindowHint(GLFW_RED_BITS, vm.redBits);
+		glfwWindowHint(GLFW_REFRESH_RATE, vm.refreshRate);
+	}
+	
+	void Window::setActive(bool cc)
+	{
+		glfwMakeContextCurrent(cc ? window : nullptr);
+	}
+	
+	bool Window::isActive() const
+	{
+		return window == glfwGetCurrentContext();
 	}
 	
 	unsigned int Window::numOfWindows = 0;

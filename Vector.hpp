@@ -10,6 +10,7 @@ class Vector
 	public:
 		Vector();
 		Vector(std::initializer_list<T>);
+		
 		~Vector() = default;
 
 		T& operator[](unsigned int);
@@ -27,8 +28,13 @@ Vector<T, D>::Vector()
 
 template<typename T, int D>
 Vector<T, D>::Vector(std::initializer_list<T> list)
-:	dims(list)
-{}
+{
+	// gcc is being funny with constructing std::array from an initializer_list...
+	for(auto it = list.begin(); it - list.begin() < D && it != list.end(); ++it)
+	{
+		dims[it - list.begin()] = *it;
+	}
+}
 
 template<typename T, int D>
 T& Vector<T, D>::operator[](unsigned int i)

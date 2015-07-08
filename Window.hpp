@@ -7,6 +7,10 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Types.hpp"
+
+#include "Monitor.hpp"
+
 #include "Vector.hpp"
 
 namespace swift
@@ -15,22 +19,35 @@ namespace swift
 	{
 		public:
 			Window();
-			Window(int contextMajor, int contextMinor);
+			Window(uint contextMajor, uint contextMinor);
 			~Window();
 			
-			bool create(const Vector<int, 2>& res, const std::string& title, int monitor, bool fullscreen);
+			bool create(const Vector<uint, 2>& res, const std::string& title, uint monitor = 0, bool fullscreen = false);
+			
+			// generally only needed for fullscreen windows
+			// otherwise, the desktop's current video mode is used
+			void setVideoMode(const Monitor::VideoMode& vm);
+			
+			// activates/deactivates the window's OpenGL context
+			// the window must be active to draw to it
+			void setActive(bool cc);
+			
+			// returns whether this Window's context is active or not
+			bool isActive() const;
 		
 		private:
 			// keeps a count of the number of windows constructed (not created).
 			// if == 0 when a window is constructed, glfwInit is called
 			// if == 0 when destroying a window, glfwTerminate is called
-			static unsigned int numOfWindows;
+			static uint numOfWindows;
 			
-			int context[2];
+			uint context[2];
 			
 			GLFWwindow* window;
 			std::string title;
 			bool isFullscreen;
+			
+			Vector<uint, 2> resolution;
 	};
 }
 
