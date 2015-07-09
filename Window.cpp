@@ -16,9 +16,16 @@ namespace swift
 		if(!numOfWindows)
 		{
 			GLint sts = glfwInit();
-			
+	
 			if(!sts)
 				throw std::runtime_error("glfwInit failed!");
+			
+			// setup GLEW
+			glewExperimental = GL_TRUE;
+			GLenum err = glewInit();
+			
+			if(err != GLEW_OK)
+				throw std::runtime_error("glewInit failed!");
 		}
 		
 		++numOfWindows;
@@ -27,8 +34,6 @@ namespace swift
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, context[1]);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-		
-		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	}
 
 	Window::~Window()
@@ -70,6 +75,21 @@ namespace swift
 	bool Window::isActive() const
 	{
 		return window == glfwGetCurrentContext();
+	}
+	
+	bool Window::isOpen() const
+	{
+		
+	}
+	
+	void Window::pollEvents()
+	{
+		glfwPollEvents();
+	}
+	
+	void Window::waitEvents()
+	{
+		glfwWaitEvents();
 	}
 	
 	unsigned int Window::numOfWindows = 0;

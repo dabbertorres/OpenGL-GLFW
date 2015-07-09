@@ -34,6 +34,14 @@ namespace swift
 			
 			// returns whether this Window's context is active or not
 			bool isActive() const;
+			
+			bool isOpen() const;
+			
+			// calling either of these two functions causes the callback functions for 
+			// each respective event to be called.
+			// these may only be called from the main thread.
+			void pollEvents();
+			void waitEvents();
 		
 		private:
 			// keeps a count of the number of windows constructed (not created).

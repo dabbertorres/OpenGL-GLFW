@@ -118,7 +118,7 @@ int main(int argc, char** argv)
 	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
 	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(posAttrib);
-
+	
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwSwapBuffers(window);
@@ -137,8 +137,8 @@ int main(int argc, char** argv)
 	glDeleteBuffers(1, &vbo);
 	
 	glDeleteVertexArrays(1, &vao);
-
+	
 	glfwTerminate();
-
+	
 	return 0;
 }
