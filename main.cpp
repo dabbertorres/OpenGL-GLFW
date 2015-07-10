@@ -16,22 +16,22 @@ int main(int argc, char** argv)
 											"{"
 											"gl_Position = vec4(position, 0.0, 1.0);"
 											"}";
-
+	
 	constexpr const char* fragShaderSrc =	"#version 150 core\n"
 											"out vec4 outColor;"
 											"void main()"
 											"{"
 											"outColor = vec4(1.0, 1.0, 1.0, 1.0);"
 											"}";
-
+	
 	glfwInit();
-
+	
 	// setup OpenGL context
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
+	
 	// setup window options
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
