@@ -31,57 +31,57 @@ namespace swift
 				{
 					using other = Allocator;
 				};
-				
+
 				using value_type = Monitor;
 			};
-			
+
 			using MonitorList = std::vector<Monitor, Allocator>;
-			
+
 			struct GammaRamp
 			{
 				GammaRamp();
-				
+
 				std::array<unsigned short, 256> blue;
 				std::array<unsigned short, 256> green;
 				std::array<unsigned short, 256> red;
 			};
-			
+
 			struct VideoMode
 			{
 				VideoMode();
 				VideoMode(const GLFWvidmode& vm);
-				
+
 				Vector<uint, 2> resolution;
 				uint refreshRate;
-				
+
 				uint blueBits;
 				uint greenBits;
 				uint redBits;
 			};
-			
+
 			static Monitor& getPrimary();
 			static const MonitorList& getAll();
-			
+
 			Vector<uint, 2> getPosition() const;
 			Vector<uint, 2> getPhysicalSize() const;
 			std::string getName() const;
 			std::vector<VideoMode> getVideoModes() const;
 			VideoMode getCurrentVideoMode() const;
-			
+
 			void setGamma(float g);
 			void setGammaRamp(const GammaRamp& gr);
 			const GammaRamp& getGammaRamp() const;
-			
+
 		private:
 			friend class Allocator;
-			
+
 			Monitor(GLFWmonitor* m);
-			
+
 			void getNewGammaRamp();
-			
+
 			GLFWmonitor* monitor;
 			GammaRamp gammaRamp;
-			
+
 		private:
 			static MonitorList monitors;
 	};

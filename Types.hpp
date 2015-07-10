@@ -4,7 +4,7 @@
 namespace swift
 {
 	using byte = unsigned char;
-	
+
 	using uint = unsigned int;
 }
 

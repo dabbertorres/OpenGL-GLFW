@@ -12,12 +12,15 @@ class Vector
 		Vector();
 		Vector(std::initializer_list<T>);
 		Vector(const std::array<T, D>&);
-		
+
 		~Vector() = default;
+
+		template<typename U>
+		operator Vector<U, D>() const;
 
 		T& operator[](unsigned int);
 		const T& operator[](unsigned int) const;
-		
+
 		T magnitude() const;
 		Vector unit() const;
 
@@ -88,6 +91,18 @@ Vector<T, D>::Vector(const std::array<T, D>& arr)
 {}
 
 template<typename T, int D>
+template<typename U>
+Vector<T, D>::operator Vector<U, D>() const
+{
+	std::array<U, D> arr;
+
+	for(auto i = 0u; i < D; ++i)
+		arr[i] = static_cast<U>(dims[i]);
+
+	return {arr};
+}
+
+template<typename T, int D>
 T& Vector<T, D>::operator[](unsigned int i)
 {
 	return dims[i];
@@ -103,10 +118,10 @@ template<typename T, int D>
 T Vector<T, D>::magnitude() const
 {
 	T total = 0;
-	
+
 	for(auto i = 0u; i < D; ++i)
 		total += dims[i] * dims[i];
-	
+
 	return std::sqrt(total);
 }
 
@@ -114,10 +129,10 @@ template<typename T, int D>
 Vector<T, D> Vector<T, D>::unit() const
 {
 	T mag = magnitude();
-	
+
 	if(!mag)
 		return {0, 0};
-	
+
 	return *this / mag;
 }
 
@@ -125,10 +140,10 @@ template<typename T, int D>
 Vector<T, D> operator +(const Vector<T, D>& lhs, const Vector<T, D>& rhs)
 {
 	std::array<T, D> arr;
-	
-	for(auto i = 0u; i < arr.size(); ++i)
+
+	for(auto i = 0u; i < D; ++i)
 		arr[i] = lhs[i] + rhs[i];
-	
+
 	return {arr};
 }
 
@@ -136,10 +151,10 @@ template<typename T, int D>
 Vector<T, D> operator -(const Vector<T, D>& lhs, const Vector<T, D>& rhs)
 {
 	std::array<T, D> arr;
-	
-	for(auto i = 0u; i < arr.size(); ++i)
+
+	for(auto i = 0u; i < D; ++i)
 		arr[i] = lhs[i] - rhs[i];
-	
+
 	return {arr};
 }
 
@@ -148,10 +163,10 @@ template<typename T, int D>
 T operator *(const Vector<T, D>& lhs, const Vector<T, D>& rhs)
 {
 	T total = 0;
-	
+
 	for(auto i = 0u; i < D; ++i)
 		total += lhs[i] * rhs[i];
-	
+
 	return total;
 }
 
@@ -159,10 +174,10 @@ template<typename T, int D>
 Vector<T, D> operator *(const Vector<T, D>& lhs, T rhs)
 {
 	std::array<T, D> arr;
-	
-	for(auto i = 0u; i < arr.size(); ++i)
+
+	for(auto i = 0u; i < D; ++i)
 		arr[i] = lhs[i] * rhs;
-	
+
 	return {arr};
 }
 
@@ -170,10 +185,10 @@ template<typename T, int D>
 Vector<T, D> operator *(T lhs, const Vector<T, D>& rhs)
 {
 	std::array<T, D> arr;
-	
-	for(auto i = 0u; i < arr.size(); ++i)
+
+	for(auto i = 0u; i < D; ++i)
 		arr[i] = lhs * rhs[i];
-	
+
 	return {arr};
 }
 
@@ -181,10 +196,10 @@ template<typename T, int D>
 Vector<T, D> operator /(const Vector<T, D>& lhs, T rhs)
 {
 	std::array<T, D> arr;
-	
-	for(auto i = 0u; i < arr.size(); ++i)
+
+	for(auto i = 0u; i < D; ++i)
 		arr[i] = lhs[i] / rhs;
-	
+
 	return {arr};
 }
 
@@ -194,7 +209,7 @@ Vector<T, D>& operator +=(Vector<T, D>& lhs, const Vector<T, D>& rhs)
 {
 	for(auto i = 0u; i < D; ++i)
 		lhs[i] += rhs[i];
-	
+
 	return lhs;
 }
 
@@ -203,7 +218,7 @@ Vector<T, D>& operator -=(Vector<T, D>& lhs, const Vector<T, D>& rhs)
 {
 	for(auto i = 0u; i < D; ++i)
 		lhs[i] -= rhs[i];
-	
+
 	return lhs;
 }
 
@@ -212,7 +227,7 @@ Vector<T, D>& operator *=(Vector<T, D>& lhs, T rhs)
 {
 	for(auto i = 0u; i < D; ++i)
 		lhs[i] += rhs;
-	
+
 	return lhs;
 }
 
@@ -221,7 +236,7 @@ Vector<T, D>& operator /=(Vector<T, D>& lhs, T rhs)
 {
 	for(auto i = 0u; i < D; ++i)
 		lhs[i] /= rhs;
-	
+
 	return lhs;
 }
 
@@ -236,7 +251,7 @@ bool operator ==(const Vector<T, D>& lhs, const Vector<T, D>& rhs)
 		else
 			return false;
 	}
-	
+
 	return true;
 }
 
