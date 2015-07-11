@@ -1,6 +1,8 @@
 #ifndef SWIFT_KEYBOARD_HPP
 #define SWIFT_KEYBOARD_HPP
 
+#include <functional>
+
 #include <GLFW/glfw3.h>
 
 namespace swift
@@ -133,8 +135,16 @@ namespace swift
 				Menu = GLFW_KEY_MENU,
 			};
 			
-			Keyboard();
-			~Keyboard();
+			enum class Modifier : int
+			{
+				Shift = GLFW_MOD_SHIFT,
+				Control = GLFW_MOD_CONTROL,
+				Alt = GLFW_MOD_ALT,
+				Super = GLFW_MOD_SUPER,
+			};
+			
+		private:
+			Keyboard() = default;
 
 	};
 }

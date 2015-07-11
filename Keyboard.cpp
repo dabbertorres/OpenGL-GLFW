@@ -2,11 +2,5 @@
 
 namespace swift
 {
-	Keyboard::Keyboard()
-	{
-	}
-
-	Keyboard::~Keyboard()
-	{
-	}
+	
 }

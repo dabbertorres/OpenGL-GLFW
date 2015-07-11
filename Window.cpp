@@ -38,25 +38,40 @@ namespace swift
 
 	Window::~Window()
 	{
-		glfwDestroyWindow(window);
-
+		if(window)
+		{
+			// remove glfw event callbacks
+			windows.erase(window);
+			
+			glfwSetKeyCallback(window, nullptr);
+			glfwSetCharCallback(window, nullptr);
+			glfwSetCursorEnterCallback(window, nullptr);
+			glfwSetCursorPosCallback(window, nullptr);
+			
+			glfwDestroyWindow(window);
+		}
+		
 		--numOfWindows;
 
 		if(!numOfWindows)
 			glfwTerminate();
 	}
 
-	bool Window::create(const Vector<uint, 2>& res, const std::string& t, uint mon, bool fs)
+	void Window::create(const Vector<uint, 2>& res, const std::string& t, uint mon, bool fs)
 	{
 		title = t;
 		isFullscreen = fs;
 		window = glfwCreateWindow(res[0], res[1], title.c_str(), nullptr, nullptr);
 
-		// should throw exception instead
 		if(!window)
 			throw std::runtime_error("Could not create the window.");
-
-		return true;
+		
+		windows.emplace(window, this);
+		
+		glfwSetKeyCallback(window, &keyboardCallback);
+		glfwSetCharCallback(window, &unicodeCallback);
+		glfwSetCursorEnterCallback(window, &mouseEnteredCallback);
+		glfwSetCursorPosCallback(window, &mouseMovedCallback);
 	}
 
 	void Window::setVideoMode(const Monitor::VideoMode& vm)
@@ -91,6 +106,61 @@ namespace swift
 	{
 		glfwWaitEvents();
 	}
-
-	unsigned int Window::numOfWindows = 0;
+	
+	void Window::keyboardCallback(GLFWwindow* win, int key, int scancode, int action, int mods)
+	{
+		switch(action)
+		{
+			case GLFW_RELEASE:
+				windows[win]->keyReleaseEvent(static_cast<Keyboard::Key>(key), mods, scancode);
+				break;
+			
+			case GLFW_PRESS:
+				windows[win]->keyPressEvent(static_cast<Keyboard::Key>(key), mods, scancode);
+				break;
+			
+			default:
+				break;
+		}
+	}
+	
+	void Window::unicodeCallback(GLFWwindow* win, uint codepoint)
+	{
+		windows[win]->unicodeEvent(codepoint);
+	}
+	
+	void Window::mouseEnteredCallback(GLFWwindow* win, int entered)
+	{
+		windows[win]->mouseEnteredEvent(entered);
+	}
+	
+	void Window::mouseMovedCallback(GLFWwindow* win, double x, double y)
+	{
+		windows[win]->mouseMovedEvent(x, y);
+	}
+	
+	void Window::mouseButtonCallback(GLFWwindow* win, int button, int action, int mods)
+	{
+		switch(action)
+		{
+			case GLFW_RELEASE:
+				windows[win]->mousePressEvent(static_cast<Mouse::Button>(button), mods);
+				break;
+				
+			case GLFW_PRESS:
+				windows[win]->mouseReleaseEvent(static_cast<Mouse::Button>(button), mods);
+				break;
+				
+			default:
+				break;
+		}
+	}
+	
+	void Window::scrollCallback(GLFWwindow* win, double x, double y)
+	{
+		windows[win]->scrollEvent(x, y);
+	}
+	
+	uint Window::numOfWindows = 0;
+	std::unordered_map<GLFWwindow*, Window*> Window::windows;
 }
