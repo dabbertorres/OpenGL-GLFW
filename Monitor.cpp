@@ -27,29 +27,13 @@ namespace swift
 
 	Monitor& Monitor::getPrimary()
 	{
-		if(monitors.empty())
-		{
-			int total = 0;
-			GLFWmonitor** mons = glfwGetMonitors(&total);
-
-			for(int i = 0; i < total; ++i)
-				monitors.emplace_back(mons[i]);
-		}
-
+		getMonitorsList();
 		return monitors[0];
 	}
 
 	const Monitor::MonitorList& Monitor::getAll()
 	{
-		if(monitors.empty())
-		{
-			int total = 0;
-			GLFWmonitor** mons = glfwGetMonitors(&total);
-
-			for(int i = 0; i < total; ++i)
-				monitors.emplace_back(mons[i]);
-		}
-
+		getMonitorsList();
 		return monitors;
 	}
 
@@ -72,7 +56,7 @@ namespace swift
 
 		return {static_cast<uint>(x), static_cast<uint>(y)};
 	}
-
+	
 	std::string Monitor::getName() const
 	{
 		return glfwGetMonitorName(monitor);
@@ -107,41 +91,46 @@ namespace swift
 		gammaRamp = gr;
 
 		GLFWgammaramp glgr;
-
 		glgr.size = 256;
-
-		for(auto i = 0u; i < glgr.size; ++i)
-		{
-			glgr.blue[i] = gammaRamp.blue[i];
-			glgr.green[i] = gammaRamp.green[i];
-			glgr.red[i] = gammaRamp.red[i];
-		}
+		
+		std::copy(gr.blue.begin(), gr.blue.end(), glgr.blue);
+		std::copy(gr.green.begin(), gr.green.end(), glgr.green);
+		std::copy(gr.red.begin(), gr.red.end(), glgr.red);
 
 		glfwSetGammaRamp(monitor, &glgr);
 	}
-
+	
 	const Monitor::GammaRamp& Monitor::getGammaRamp() const
 	{
 		return gammaRamp;
 	}
+	
+	void Monitor::getMonitorsList()
+	{
+		if(monitors.empty())
+		{
+			int total = 0;
+			GLFWmonitor** mons = glfwGetMonitors(&total);
 
+			for(int i = 0; i < total; ++i)
+				monitors.emplace_back(mons[i]);
+		}
+	}
+	
 	Monitor::Monitor(GLFWmonitor* m)
 	:	monitor(m)
 	{
 		getNewGammaRamp();
 	}
-
+	
 	void Monitor::getNewGammaRamp()
 	{
 		const GLFWgammaramp* gr = glfwGetGammaRamp(monitor);
-
-		for(auto i = 0u; i < gr->size; ++i)
-		{
-			gammaRamp.blue[i] = gr->blue[i];
-			gammaRamp.green[i] = gr->green[i];
-			gammaRamp.red[i] = gr->red[i];
-		}
+		
+		std::copy(gr->blue, gr->blue + gr->size, gammaRamp.blue.begin());
+		std::copy(gr->green, gr->green + gr->size, gammaRamp.green.begin());
+		std::copy(gr->red, gr->red + gr->size, gammaRamp.red.begin());
 	}
-
+	
 	std::vector<Monitor, Monitor::Allocator> Monitor::monitors;
 }

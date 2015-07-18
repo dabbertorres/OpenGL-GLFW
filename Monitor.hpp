@@ -35,8 +35,6 @@ namespace swift
 				using value_type = Monitor;
 			};
 
-			using MonitorList = std::vector<Monitor, Allocator>;
-
 			struct GammaRamp
 			{
 				GammaRamp();
@@ -59,6 +57,8 @@ namespace swift
 				uint redBits;
 			};
 
+			using MonitorList = std::vector<Monitor, Allocator>;
+
 			static Monitor& getPrimary();
 			static const MonitorList& getAll();
 
@@ -74,6 +74,9 @@ namespace swift
 
 		private:
 			friend class Allocator;
+			friend class Window;
+			
+			static void getMonitorsList();
 
 			Monitor(GLFWmonitor* m);
 

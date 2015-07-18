@@ -2,9 +2,8 @@
 #define SWIFT_WINDOW_HPP
 
 #include <string>
-#include <set>
 #include <unordered_map>
-#include <functional>
+#include <mutex>
 
 #include <GL/glew.h>	// GLEW include MUST go before GLFW include
 
@@ -55,7 +54,7 @@ namespace swift
 			
 			~Window();
 
-			void create(const Vector<uint, 2>& res, const std::string& title, uint monitor = 0, bool fullscreen = false);
+			void create(const Vector<uint, 2>& res, const std::string& title, const Monitor& monitor = Monitor::getPrimary(), bool fullscreen = false);
 
 			// generally only needed for fullscreen windows
 			// otherwise, the desktop's current video mode is used
@@ -69,7 +68,13 @@ namespace swift
 			bool isActive() const;
 
 			bool isOpen() const;
-
+			
+			/* Drawing */
+			void clear();
+			void draw();
+			void display();
+			
+			/* Event functions/variables */
 			// calling either of these two functions causes the callback functions for
 			// each respective event to be called.
 			// these may only be called from the main thread.
@@ -101,6 +106,9 @@ namespace swift
 			// keeps pointers to all Window instances by their GLFWwindow pointer.
 			// used for accessing the correct Window from event callback functions
 			static std::unordered_map<GLFWwindow*, Window*> windows;
+			
+			// mutex to lock when accessing either of the two above variables
+			static std::mutex windowStaticLock;
 			
 			uint context[2];
 
