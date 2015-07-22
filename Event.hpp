@@ -1,6 +1,8 @@
 #ifndef SWIFT_PRIVATE_EVENT_HPP
 #define SWIFT_PRIVATE_EVENT_HPP
 
+#include <functional>
+#include <memory>
 #include <set>
 
 namespace swift
@@ -8,27 +10,25 @@ namespace swift
 	template<typename... CallbackArgs>
 	class Event
 	{
-		friend class Window;
-		
 		public:
-			using Callback = void (*)(CallbackArgs...);
+			using Callback = std::function<void(CallbackArgs...)>;
 			
 			Event() = default;
 			~Event() = default;
 			
 			bool addListener(const Callback& cb);
 			bool removeListener(const Callback& cb);
+			
+			void operator()(CallbackArgs... args);
 		
 		private:
-			void operator()(CallbackArgs... args);
-			
-			std::set<Callback> listeners;
+			std::set<std::shared_ptr<Callback>> listeners;
 	};
 	
 	template<typename... CallbackArgs>
 	bool Event<CallbackArgs...>::addListener(const Callback& cb)
 	{
-		return listeners.insert(cb).second;
+		return listeners.insert(std::make_shared<Callback>(cb)).second;
 	}
 	
 	template<typename... CallbackArgs>
@@ -41,7 +41,7 @@ namespace swift
 	void Event<CallbackArgs...>::operator()(CallbackArgs... args)
 	{
 		for(auto& l : listeners)
-			l(args...);
+			(*l)(args...);
 	}
 }
 

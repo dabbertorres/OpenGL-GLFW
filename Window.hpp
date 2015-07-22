@@ -47,6 +47,14 @@ namespace swift
 			// x offset, y offset
 			using ScrollEvent = Event<double, double>;
 			
+			using PositionEvent = Event<int, int>;
+			
+			using SizeEvent = Event<int, int>;
+			
+			using FocusEvent = Event<bool>;
+			
+			using CloseEvent = Event<bool&>;
+			
 			Window();
 			Window(uint contextMajor, uint contextMinor);
 			
@@ -69,6 +77,11 @@ namespace swift
 
 			bool isOpen() const;
 			
+			bool hasFocus() const;
+			
+			Vector<uint, 2> getPosition() const;
+			Vector<uint, 2> getSize() const;
+			
 			/* Drawing */
 			void clear();
 			void draw();
@@ -89,6 +102,10 @@ namespace swift
 			MousePressEvent mousePressEvent;
 			MouseReleaseEvent mouseReleaseEvent;
 			ScrollEvent scrollEvent;
+			PositionEvent positionEvent;
+			SizeEvent sizeEvent;
+			FocusEvent focusEvent;
+			CloseEvent closeEvent;
 			
 		private:
 			// C doesn't like member functions. These aren't member functions.
@@ -98,10 +115,16 @@ namespace swift
 			static void mouseMovedCallback(GLFWwindow* win, double x, double y);
 			static void mouseButtonCallback(GLFWwindow* win, int button, int action, int mods);
 			static void scrollCallback(GLFWwindow* win, double x, double y);
+			static void positionCallback(GLFWwindow* win, int x, int y);
+			static void sizeCallback(GLFWwindow* win, int x, int y);
+			static void focusCallback(GLFWwindow* win, int f);
+			static void closeCallback(GLFWwindow* win);
 			 
 			// if size == 0 when a window is constructed, glfwInit is called
 			// if size == 0 when destroying a window, glfwTerminate is called
 			static uint numOfWindows;
+			
+			static bool glfwInitialized;
 			
 			// keeps pointers to all Window instances by their GLFWwindow pointer.
 			// used for accessing the correct Window from event callback functions

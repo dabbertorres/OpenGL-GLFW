@@ -111,7 +111,7 @@ namespace swift
 		{
 			int total = 0;
 			GLFWmonitor** mons = glfwGetMonitors(&total);
-
+			
 			for(int i = 0; i < total; ++i)
 				monitors.emplace_back(mons[i]);
 		}
@@ -132,5 +132,5 @@ namespace swift
 		std::copy(gr->red, gr->red + gr->size, gammaRamp.red.begin());
 	}
 	
-	std::vector<Monitor, Monitor::Allocator> Monitor::monitors;
+	Monitor::MonitorList Monitor::monitors;
 }

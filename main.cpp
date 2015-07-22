@@ -5,8 +5,10 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Window.hpp"
+#include "Monitor.hpp"
+
 #include "Vector.hpp"
-#include "Triangle.hpp"
 
 int main(int argc, char** argv)
 {
@@ -24,26 +26,20 @@ int main(int argc, char** argv)
 											"outColor = vec4(1.0, 1.0, 1.0, 1.0);"
 											"}";
 	
-	glfwInit();
+	swift::Window window;
 	
-	// setup OpenGL context
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	bool running = true;
 	
-	// setup window options
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
-	GLFWwindow* window = glfwCreateWindow(1280, 720, "StickerOnPlane", nullptr, nullptr);
-	glfwMakeContextCurrent(window);
-
-	// setup GLEW
-	glewExperimental = GL_TRUE;
-	glewInit();
+	window.closeEvent.addListener([&](bool&)
+	{
+		std::cerr << "close event\n";
+		running = false;
+	});
+	
+	window.create({1280, 720}, "Swift OpenGL");
 
 	// we can use Vertex Array Objects to save links between attributes and Vertex Buffer Objects
-	GLuint vao;
+	/*GLuint vao;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
@@ -118,19 +114,17 @@ int main(int argc, char** argv)
 	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
 	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(posAttrib);
-
-	while (!glfwWindowShouldClose(window))
+	*/
+	while(running)
 	{
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+		window.pollEvents();
 
-		glClearColor(0, 0, 0, 1);
-		glClear(GL_COLOR_BUFFER_BIT);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		window.clear();
+		window.display();
 	}
 
 	// clean up
-	glDeleteProgram(shaderProgram);
+	/*glDeleteProgram(shaderProgram);
 	glDeleteShader(fragShader);
 	glDeleteShader(vertShader);
 
@@ -139,6 +133,6 @@ int main(int argc, char** argv)
 	glDeleteVertexArrays(1, &vao);
 
 	glfwTerminate();
-
+	*/
 	return 0;
 }
